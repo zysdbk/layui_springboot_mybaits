@@ -1,5 +1,7 @@
 package cn.zys.Springboot.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,7 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +27,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import cn.zys.Springboot.bean.RedisUtil;
 import cn.zys.Springboot.bean.User;
 import cn.zys.Springboot.service.UserService;
- 
+
+
+
 @Controller
 public class UserController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	RedisUtil redisUtil;
 	
 	@RequestMapping("/listUser")
 	public String listUser(Model model) {
@@ -145,12 +153,52 @@ public class UserController {
 	
 	
 	@RequestMapping("/logon")
-	public String logon(User user,HttpServletRequest request)  {
-
+	public String logon(User user,HttpServletRequest request,HttpServletResponse response) throws IOException  {
+			String role = null;
+			if(null != user.getName() || user.getId() == 0) {
+				String key = user.getName();
+				
+				
+				String value = (String) redisUtil.get(key);
+				
+				if("Logged" == value) {
+					request.getSession().setAttribute("sessionId", user.getId());
+					request.getSession().setAttribute("name", user.getName());
+					request.getSession().setAttribute("status", "已登陆");
+					redisUtil.expire(user.getName() , 600);
+					role = userService.searchRole(user.getName());
+					if(role == null) {
+						
+						request.getSession().setAttribute("role", null);
+					}else {
+						request.getSession().setAttribute("role", role);
+						
+					}
+					System.out.println(key);
+					
+					return "mainSheet";
+					
+				}
+				
+			}
+			
 			if(userService.logon(user)!= null) {
+				
 				if(user.equals(userService.logon(user))) {
 					request.getSession().setAttribute("sessionId", user.getId());
 					request.getSession().setAttribute("name", user.getName());
+					
+					redisUtil.set(user.getName(),"Logged");
+					redisUtil.expire(user.getName() , 600);
+					role = userService.searchRole(user.getName());
+					System.out.println(role);
+					if(role == null) {
+						
+						request.getSession().setAttribute("role", null);
+					}else {
+						request.getSession().setAttribute("role", role);
+						
+					}
 					
 					return "mainSheet";
 				}
@@ -160,9 +208,15 @@ public class UserController {
 											
 	}
 	
+
 	
 	@RequestMapping("/index")
 	public String index() {
+		return "/index";
+	}
+	
+	@RequestMapping("/")
+	public String mainIndex() {
 		return "/index";
 	}
 	
@@ -174,7 +228,9 @@ public class UserController {
 		}
 		session.removeAttribute("sessionId");
 		session.removeAttribute("name");
-		return "/index";
+		session.removeAttribute("status");
+		session.removeAttribute("role");
+		return "redirect:/index";
 	}
 	
 	@RequestMapping("/mainSheet")

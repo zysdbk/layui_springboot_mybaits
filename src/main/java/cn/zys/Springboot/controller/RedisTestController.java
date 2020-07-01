@@ -29,6 +29,7 @@ public class RedisTestController {
     @RequestMapping("/testRedisAdd")
     @ResponseBody
     Object testRedisAdd(String key,String value){
+    	
         redisUtil.set(key,value);
         System.out.println(redisUtil.get(key));
         return redisUtil.get(key);

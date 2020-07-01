@@ -20,7 +20,7 @@ public interface UserMapper {
 	 * 全部用户查询
 	 * @return
 	 */
-	@Select("SELECT ID,NAME,PASSWORD FROM S_USER")
+	@Select("SELECT ID,NAME,PASSWORD,ROLE FROM S_USER")
 	List<User> findAll();
 	
 	/**
@@ -34,9 +34,17 @@ public interface UserMapper {
 	 * 模糊用户查询
 	 * @return
 	 */
+	
 	@Select("SELECT ID,NAME,PASSWORD FROM S_USER WHERE "
 			+ "NAME LIKE CONCAT('%',#{name},'%') AND PASSWORD LIKE CONCAT('%',#{password},'%')")
 	List<User> searchUser(User user);
+	
+	/**
+	 * 查询用户角色
+	 * @return
+	 */
+	@Select("SELECT ROLE FROM S_USER WHERE NAME=#{name}")
+	String searchRole(String name);
 	
 	/**
 	 * 新增用户

@@ -62,7 +62,7 @@
                             </dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item" id="admin" >
                         <a href="javascript:;">
                             <i class="layui-icon">&#xe612;</i>
                             <em>用户</em>
@@ -94,6 +94,18 @@
     <script src="<%=basePath%>/js/layui.js"></script>
     <script src="<%=basePath%>/js/index.js" data-main="<%=basePath%>/js/home"></script>
 
-	
+	<script type="text/javascript">
+	layui.use(['jquery', 'layer'], function(){	
+		var $ = layui.$;
+		var role = "<%=session.getAttribute("role")%>";
+		if(role == "admin"){
+			
+			
+		}else{
+			
+			$('#admin').hide();
+		}
+	})
+	</script>
 </body>
 </html>

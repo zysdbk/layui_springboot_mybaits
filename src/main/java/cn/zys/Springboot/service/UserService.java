@@ -39,7 +39,14 @@ public class UserService {
 		return userMapper.searchUser(user);
 	}
 	
+	/**
+	 * 查询用户角色
+	 * @param user
+	 */
 	
+	public String searchRole(String name) {
+		return userMapper.searchRole(name);
+	}
 	/**
 	 * 添加用户
 	 * @param user

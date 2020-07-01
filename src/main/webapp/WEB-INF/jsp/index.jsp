@@ -6,10 +6,6 @@
 <head>
 <title>ChinaZ</title>
 <%
-if(session.getAttribute("sessionId") != null){
-	
-	response.sendRedirect("mainSheet");
-}
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path;
 %>
@@ -49,7 +45,8 @@ if(session.getAttribute("sessionId") != null){
 		</div>
 	<!--//end-copyright-->
 	
-	<script>
+<script>	
+
 
 var vm = new Vue({
 	el: '#app',
@@ -61,26 +58,44 @@ var vm = new Vue({
 			  message:''
 			  
 			  
-	  },
-		methods:{
+	  }
+	  ,mounted:function(){
+		  var a = "<%=session.getAttribute("name")%>"; 
+		  var user=new Object();
+		  user.id=0;
+		  user.name=a;
+		  console.log(a=="null");
+		  if(a != "null"){
+			  this.$http.post('/logon',user,{emulateJSON:true})
+	            .then(function(res){
+	            	console.log(res);
+	            	window.location.href="${pageContext.request.contextPath}/mainSheet";
+              },function(res){
+            	  return this.message = "用户已过期，请重新登陆";
+              })
+			  
+		  }
+	  } 
+	  ,methods:{
 			
 
 			
 			logon:function(){
 				var _this = this;
 				var Check = /^\w{6,16}$/;
-				
+
 		       if(Check.test(_this.name) && Check.test(_this.password)) {
-					var user=new Object();
+		    	   user=new Object();
+					
 					user.name=_this.name;
 					user.password=_this.password;
 					alert("user："+JSON.stringify(user));
 					//var str=JSON.stringify(user);
 		            this.$http.post('/logon',user,{emulateJSON:true})
 		            .then(function(res){
-	                    console.log(res.text());
+	                    console.log(res);
 	                    _this.message = "";	                    
-	                    window.location.href="${pageContext.request.contextPath}/mainSheet";
+	                     window.location.href="${pageContext.request.contextPath}/mainSheet";
 	                },function(res){
 	                    console.log(res.status);
 	                    return _this.message = "用户名或密码错误";
@@ -96,11 +111,12 @@ var vm = new Vue({
 
 			}
 		}
-	})
+});
 
 
 
-</script>
-	
+
+
+</script>	
 </body>
 </html>

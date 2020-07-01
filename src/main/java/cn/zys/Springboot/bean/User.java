@@ -5,6 +5,13 @@ public class User {
 	private int id;
 	private String name;
 	private String password;
+	private String role;
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role = role;
+	}
 	public int getId() {
 		return id;
 	}
@@ -27,7 +34,6 @@ public class User {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		return result;
