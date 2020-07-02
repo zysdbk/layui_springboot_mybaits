@@ -20,9 +20,9 @@
 
 </head>
 <body>
-	<h1>App Location Form</h1>
+	<h1>Amadeus</h1>
 		<div class="app-location"  id="app">
-			<h2>Welcome to Locaticus</h2>
+			<h2>Welcome to Amadeus</h2>
 			<div class="line"><span></span></div>
 			<div class="location"><img src="<%=basePath%>/images/logo.png" class="img-responsive" alt="" /></div>
 		 	
@@ -41,7 +41,7 @@
 	</div>
 	<!--start-copyright-->
    		<div class="copy-right">
-				<p>Copyright &copy; 2015.Company name All rights reserved.</p>
+				<p>Copyright &copy; 2020.Company name All rights reserved.</p>
 		</div>
 	<!--//end-copyright-->
 	
